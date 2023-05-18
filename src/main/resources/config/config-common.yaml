@@ -1,0 +1,11 @@
+# Common File to be use in All env
+application:
+  name: "iewc-sap-sapi"
+milestone:
+  category: "LOG"
+  
+#logging info
+
+target: "sap-system"
+requestMessage: "Received request from papi"
+responseMessage: "Response sent back to papi"

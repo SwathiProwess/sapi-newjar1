@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:sap="http://www.mulesoft.org/schema/mule/sap"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sap http://www.mulesoft.org/schema/mule/sap/current/mule-sap.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="subFlow" doc:id="063741fb-3f7d-4959-b914-dc627886a590" >
+		<ee:transform doc:name="requestReceived" doc:id="82e7b479-cee4-4bb7-b952-8d8fe199e3b7">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="inputPayload" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    correlationId : correlationId,
+    eventTimestamp : now(), 
+    businessProcessName: app.name,
+    flowName: flow.name,   
+    source: vars.sourceName, 
+    target: p('target'), 
+    httpMethod: vars.httpMethod, 
+    message: p('requestMessage')
+   
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="callToLogRequestReceived" doc:id="1929916d-1b45-4902-ac74-93abf83e45a6" name="mile-log:request-received" />
+		<sap:sync-rfc doc:name="synchronousRFC" doc:id="43ba5fc2-a9fa-4fe0-8f5e-7440ce42a710" config-ref="SAP_Config" key="#[vars.functionModule]"/>
+		<ee:transform doc:name="responseSent" doc:id="81d37c82-8905-4aac-9337-1638f6393692">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="inputPayload" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    correlationId : correlationId,
+    eventTimestamp : now(), 
+    businessProcessName: app.name,
+    flowName:flow.name,   
+    source: vars.sourceName, 
+    target: p('target'), 
+    httpMethod: vars.httpMethod, 
+    message: p('responseMessage')   
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="callToLogResponseSent" doc:id="fcfcbccd-9f1c-4721-bbb0-5ff3ca0673ea" name="mile-log:request-sent" />
+	</flow>
+</mule>
