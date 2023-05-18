@@ -48,7 +48,10 @@
 						<properties>
 							<maven.compiler.target>1.8</maven.compiler.target>
 							<maven.compiler.source>1.8</maven.compiler.source>
+							<anypoint.platform.client_id>${sbClientId}</anypoint.platform.client_id>
+							<anypoint.platform.client_secret>${sbClientSecret}</anypoint.platform.client_secret>
 							<mule.env>${mule.env}</mule.env>
+							<mule.key>${mule.key}</mule.key>
 						</properties>
 						<uri>https://anypoint.mulesoft.com</uri>
 					</cloudHubDeployment>
